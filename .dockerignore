@@ -1,0 +1,42 @@
+# Dependencies (reinstalled inside image)
+node_modules
+client/node_modules
+server/node_modules
+
+# Build output (rebuilt inside image)
+client/dist
+client/dist-ssr
+
+# Database (runtime data — must not be baked in)
+server/budget.db
+server/budget.db-shm
+server/budget.db-wal
+*.db
+*.sqlite
+*.sqlite3
+
+# Secrets
+.env
+.env.*
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Version control
+.git
+.gitignore
+
+# OS artefacts
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode
+.idea
+
+# CI / docs
+README.md
+.github
+
