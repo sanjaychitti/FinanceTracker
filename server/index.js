@@ -226,7 +226,19 @@ const deleteCard = db.prepare(`
   WHERE id = ? AND user_id = ?
 `)
 
-app.use(cors())
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:4000',
+  ...(process.env.ALLOWED_ORIGIN ? [process.env.ALLOWED_ORIGIN] : []),
+]
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow server-to-server calls (no origin) and listed origins
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true)
+    callback(new Error(`CORS: origin ${origin} not allowed`))
+  },
+  credentials: true,
+}))
 app.use(express.json())
 
 const requireAuth = (req, res, next) => {

@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 
+// In dev, VITE_API_URL is unset so fetch uses the Vite proxy (localhost:4000).
+// On Vercel, set VITE_API_URL to your Fly.io backend URL, e.g. https://finance-tracker-sanjay.fly.dev
+const API_BASE = import.meta.env.VITE_API_URL ?? ''
+
 const MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December',
@@ -54,7 +58,7 @@ function App() {
 
     const bootstrapSession = async () => {
       try {
-        const response = await fetch('/api/me', {
+        const response = await fetch(`${API_BASE}/api/me`, {
           headers: { Authorization: `Bearer ${token}` },
         })
 
@@ -73,13 +77,13 @@ function App() {
           savingsGoal: String(result.budget.savingsGoal || ''),
         })
 
-        const cardsRes = await fetch('/api/cards', { headers: { Authorization: `Bearer ${token}` } })
+        const cardsRes = await fetch(`${API_BASE}/api/cards`, { headers: { Authorization: `Bearer ${token}` } })
         if (cardsRes.ok) {
           const cardsData = await cardsRes.json()
           setCards(cardsData.cards)
         }
 
-        const histRes = await fetch('/api/budget/history', { headers: { Authorization: `Bearer ${token}` } })
+        const histRes = await fetch(`${API_BASE}/api/budget/history`, { headers: { Authorization: `Bearer ${token}` } })
         if (histRes.ok) {
           const histData = await histRes.json()
           setBudgetHistory(histData.history)
@@ -129,7 +133,7 @@ function App() {
 
   const fetchBudgetForMonth = async (year, month) => {
     try {
-      const res = await fetch(`/api/budget/${year}/${month}`, {
+      const res = await fetch(`${API_BASE}/api/budget/${year}/${month}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       if (res.ok) {
@@ -156,7 +160,7 @@ function App() {
     setApiMessage('')
 
     try {
-      const response = await fetch('/api/register', {
+      const response = await fetch(`${API_BASE}/api/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(authForm),
@@ -188,7 +192,7 @@ function App() {
     setApiMessage('')
 
     try {
-      const response = await fetch('/api/login', {
+      const response = await fetch(`${API_BASE}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: authForm.username, password: authForm.password }),
@@ -222,7 +226,7 @@ function App() {
     setApiMessage('')
 
     try {
-      const response = await fetch('/api/budget', {
+      const response = await fetch(`${API_BASE}/api/budget`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -237,7 +241,7 @@ function App() {
       }
 
       setApiMessage(result.message)
-      const histRes = await fetch('/api/budget/history', { headers: { Authorization: `Bearer ${token}` } })
+      const histRes = await fetch(`${API_BASE}/api/budget/history`, { headers: { Authorization: `Bearer ${token}` } })
       if (histRes.ok) {
         const histData = await histRes.json()
         setBudgetHistory(histData.history)
@@ -251,7 +255,7 @@ function App() {
 
   const logout = async () => {
     try {
-      await fetch('/api/logout', {
+      await fetch(`${API_BASE}/api/logout`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -278,7 +282,7 @@ function App() {
     setIsSavingCard(true)
     setCardMessage('')
     const isEditing = cardForm.editingId !== null
-    const url = isEditing ? `/api/cards/${cardForm.editingId}` : '/api/cards'
+    const url = isEditing ? `${API_BASE}/api/cards/${cardForm.editingId}` : `${API_BASE}/api/cards`
     const method = isEditing ? 'PUT' : 'POST'
     try {
       const response = await fetch(url, {
@@ -318,7 +322,7 @@ function App() {
   const handleCardDelete = async (id) => {
     if (!window.confirm('Remove this credit card?')) return
     try {
-      const response = await fetch(`/api/cards/${id}`, {
+      const response = await fetch(`${API_BASE}/api/cards/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       })
