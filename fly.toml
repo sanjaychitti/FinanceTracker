@@ -2,7 +2,7 @@
 # IMPORTANT: Replace "finance-tracker-YOUR-NAME" with the unique app name
 # you create in Step 2 of the deployment guide.
 
-app = "finance-tracker-YOUR-NAME"
+app = "finance-tracker-sanjay"
 primary_region = "iad"
 
 [build]
