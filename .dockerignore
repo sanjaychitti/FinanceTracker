@@ -39,4 +39,5 @@ Thumbs.db
 # CI / docs
 README.md
 .github
+fly.toml
 

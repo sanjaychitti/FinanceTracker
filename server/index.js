@@ -10,7 +10,14 @@ dotenv.config()
 const app = express()
 const port = Number(process.env.PORT) || 4000
 
-const dbPath = path.join(__dirname, 'budget.db')
+const dbPath = process.env.NODE_ENV === 'production'
+  ? '/data/budget.db'
+  : path.join(__dirname, 'budget.db')
+
+// Ensure the data directory exists (Fly.io volume mount)
+const fs = require('fs')
+fs.mkdirSync(path.dirname(dbPath), { recursive: true })
+
 const db = new Database(dbPath)
 
 const activeSessions = new Map()

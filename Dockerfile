@@ -22,5 +22,8 @@ RUN npm install --omit=dev; npm install --prefix server --omit=dev
 COPY --from=builder /app/server ./server
 COPY --from=builder /app/client/dist ./client/dist
 
-EXPOSE 4000
+# Create persistent data directory for SQLite (Fly.io volume mounts here)
+RUN mkdir -p /data
+
+EXPOSE 8080
 CMD ["npm", "run", "start"]
